@@ -1,0 +1,24 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+  "include": [
+    "src/renderer/src/**/*",
+    "src/renderer/src/**/*.tsx",
+    "src/preload/*.d.ts",
+    "src/shared/**/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "jsx": "react-jsx",
+    // Vite resolves the renderer's imports, and the toolkit base still sets the
+    // deprecated "node10" resolution. Paths are relative to this file, so no
+    // baseUrl (removed in TypeScript 7.0).
+    "moduleResolution": "bundler",
+    // composite implies declaration emit; keep it inside the ignored out/ rather
+    // than beside the sources. Vite bundles from src/, not from here.
+    "outDir": "out/types/renderer",
+    "paths": {
+      "@renderer/*": ["./src/renderer/src/*"],
+      "@shared/*": ["./src/shared/*"]
+    }
+  }
+}

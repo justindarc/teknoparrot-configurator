@@ -1,0 +1,25 @@
+{
+  // The standalone scripts import from src/, so they need the same compiler
+  // options and "@shared/*" path mapping as the main process. Without a config
+  // the editor falls back to an inferred project, those imports fail to
+  // resolve, and the types they feed degrade to implicit any.
+  "extends": "../tsconfig.node.json",
+  // The ../src entries are what the scripts reach through their imports. They
+  // must be listed rather than pulled in implicitly, or the editor reports
+  // TS6307 ("not listed within the file list of project"). Renderer sources are
+  // deliberately absent: this project has no jsx option.
+  "include": ["**/*", "../src/main/**/*", "../src/shared/**/*"],
+  "compilerOptions": {
+    // Nothing consumes declarations from here, and Node runs these directly.
+    "composite": false,
+    "noEmit": true,
+    // These scripts import from ../src, so the project spans the whole repo.
+    // Without this, rootDir defaults to this file's directory and every ../src
+    // import reports TS6059 (tsc infers it from all program files and stays
+    // quiet, but the editor's language server does not).
+    "rootDir": "..",
+    // classify-controls.mts imports "../src/shared/controlScheme.ts" with an
+    // explicit extension, which Node's type-stripping resolver requires.
+    "allowImportingTsExtensions": true
+  }
+}

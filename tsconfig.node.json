@@ -1,0 +1,21 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": [
+    "electron.vite.config.ts",
+    "src/main/**/*",
+    "src/preload/**/*",
+    "src/shared/**/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    // composite implies declaration emit; keep it inside the ignored out/ rather
+    // than beside the sources. electron-vite bundles from src/, not from here.
+    "outDir": "out/types/node",
+    "types": ["electron-vite/node", "node"],
+    "paths": {
+      "@shared/*": ["./src/shared/*"]
+    }
+  }
+}

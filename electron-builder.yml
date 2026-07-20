@@ -1,0 +1,40 @@
+appId: com.teknoparrot.configurator
+productName: TeknoParrot Configurator
+# Native deps (koffi, node-hid) ship cross-platform N-API prebuilts, so no
+# per-target recompile is needed. Disabling rebuild lets those bundled binaries
+# be packaged as-is, which is what makes cross-compiling to Windows work.
+npmRebuild: false
+directories:
+  buildResources: build
+  output: dist
+files:
+  - out/**/*
+  - package.json
+asarUnpack:
+  - resources/**
+  # Native FFI modules must live outside the asar so their prebuilt binaries
+  # (koffi's *.node) can be dlopen'd at runtime.
+  - "**/node_modules/koffi/**"
+  - "**/node_modules/xinput-ffi/**"
+  - "**/node_modules/node-hid/**"
+  - "**/node_modules/node-addon-api/**"
+win:
+  target:
+    - nsis
+    - zip
+  # Default name for win targets (the portable zip). ${name} is the package.json
+  # "name" field. The nsis installer overrides this below with its "setup" name.
+  artifactName: ${name}-${version}-win-${arch}.${ext}
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: ${name}-${version}-setup.${ext}
+mac:
+  target:
+    - dmg
+  category: public.app-category.utilities
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
